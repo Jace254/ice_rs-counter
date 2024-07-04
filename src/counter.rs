@@ -1,5 +1,9 @@
-use iced::widget::{button, row, text};
-use iced::{Alignment, Element, Sandbox};
+use iced::{
+    alignment::{Horizontal, Vertical}, 
+    widget::{button, text, Container, Row},
+    Element, 
+    Sandbox
+};
 
 pub struct Counter {
     state: i64
@@ -31,7 +35,7 @@ impl Sandbox for Counter {
         String::from("Counter - Iced")
     }
 
-    fn update(&mut self, message: Message) {
+    fn update(&mut self, message: Self::Message) {
         match message {
             Message::Decrement => {
                 self.state -= 1;
@@ -42,17 +46,18 @@ impl Sandbox for Counter {
         }
     }
 
-    fn view(&self) -> Element<Message> {
-        row![
-            button("+")
-                .on_press(Message::Increment),
-            text(self.state),
-            button("-")
-                .on_press(Message::Decrement),
-        ] 
-        .padding(20)
-        .align_items(Alignment::Center)
-        .into()
+    fn view(&self) -> Element<Self::Message> {
+        let inc = button( text("+").width(50).height(50).size(32).vertical_alignment(Vertical::Center).horizontal_alignment(Horizontal::Center))
+            .on_press(Message::Increment)
+            .style(iced::theme::Button::Destructive);
+
+        let label = text(self.state);
+
+        let dec = button( text("-").width(50).height(50).size(32).vertical_alignment(Vertical::Center).horizontal_alignment(Horizontal::Center))
+            .on_press(Message::Decrement)
+            .style(iced::theme::Button::Destructive);
+        let ro = Row::new().push(inc).push(label).push(dec).spacing(50).align_items(iced::Alignment::Center);
+        Container::new(ro).center_x().center_y().width(iced::Length::Fill).height(iced::Length::Fill).into()
     }
 }
 
